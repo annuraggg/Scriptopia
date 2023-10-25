@@ -808,7 +808,7 @@ const Event = () => {
         </Box>
 
         <Modal isOpen={isOpen} onClose={onClose} size="3xl">
-          <ModalOverlay backdropFilter="blur(10px) hue-rotate(90deg)/" />
+          <ModalOverlay backdropFilter="blur(10px) hue-rotate(90deg)" />
           <ModalContent>
             <ModalHeader>Edit Event</ModalHeader>
             <ModalCloseButton />
@@ -1099,7 +1099,7 @@ const Event = () => {
         </AlertDialog>
 
         <Modal isOpen={isParticipantsOpen} onClose={onParticipantsClose} size="3xl">
-          <ModalOverlay backdropFilter="blur(10px) hue-rotate(90deg)/" />
+          <ModalOverlay backdropFilter="blur(10px) hue-rotate(90deg)" />
           <ModalContent>
             <ModalHeader>Participants</ModalHeader>
             <ModalCloseButton />

@@ -491,7 +491,7 @@ const Certificate = () => {
           </AlertDialog>
 
           <Modal isOpen={isEditOpen} onClose={onEditClose} size="3xl">
-            <ModalOverlay backdropFilter="blur(10px) hue-rotate(90deg)/" />
+            <ModalOverlay backdropFilter="blur(10px) hue-rotate(90deg)" />
             <ModalContent>
               <ModalHeader>Edit Certificate</ModalHeader>
               <ModalCloseButton />
@@ -603,7 +603,7 @@ const Certificate = () => {
         </Box>
 
         <Modal isOpen={isHashOpen} onClose={onHashClose} size="2xl">
-          <ModalOverlay backdropFilter="blur(10px) hue-rotate(90deg)/" />
+          <ModalOverlay backdropFilter="blur(10px) hue-rotate(90deg)" />
           <ModalContent>
             <ModalHeader>Verify Hashes</ModalHeader>
             <ModalCloseButton />

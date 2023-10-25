@@ -168,7 +168,7 @@ const Certificates = () => {
         </Box>
 
         <Modal isOpen={isOpen} onClose={onClose}>
-          <ModalOverlay backdropFilter="blur(10px) hue-rotate(90deg)/" />
+          <ModalOverlay backdropFilter="blur(10px) hue-rotate(90deg)" />
           <ModalContent>
             <ModalHeader>Modal Title</ModalHeader>
             <ModalCloseButton />

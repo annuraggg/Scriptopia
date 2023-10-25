@@ -499,7 +499,7 @@ const Students = () => {
         </AlertDialog>
 
         <Modal isOpen={isEditOpen} onClose={onEditClose}>
-          <ModalOverlay backdropFilter="blur(10px) hue-rotate(90deg)/" />
+          <ModalOverlay backdropFilter="blur(10px) hue-rotate(90deg)" />
           <ModalContent>
             <ModalHeader>Update Student</ModalHeader>
             <ModalCloseButton />

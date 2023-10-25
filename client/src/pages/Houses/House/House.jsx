@@ -543,7 +543,7 @@ const House = () => {
         </Box>
 
         <Modal isOpen={isOpen} onClose={onClose} size="3xl">
-          <ModalOverlay backdropFilter="blur(10px) hue-rotate(90deg)/" />
+          <ModalOverlay backdropFilter="blur(10px) hue-rotate(90deg)" />
           <ModalContent>
             <ModalHeader>{houses?.members.length} Members</ModalHeader>
             <ModalCloseButton />
@@ -588,7 +588,7 @@ const House = () => {
         </Modal>
 
         <Modal isOpen={isSettingsOpen} onClose={onSettingsClose} size="4xl">
-          <ModalOverlay backdropFilter="blur(10px) hue-rotate(90deg)/" />
+          <ModalOverlay backdropFilter="blur(10px) hue-rotate(90deg)" />
           <ModalContent>
             <ModalHeader>{houses?.name} Settings</ModalHeader>
             <ModalCloseButton />
@@ -758,7 +758,7 @@ const House = () => {
         </AlertDialog>
 
         <Modal isOpen={isLogoOpen} onClose={onLogoClose}>
-          <ModalOverlay backdropFilter="blur(10px) hue-rotate(90deg)/" />
+          <ModalOverlay backdropFilter="blur(10px) hue-rotate(90deg)" />
           <ModalContent>
             <ModalHeader>Edit Logo</ModalHeader>
             <ModalCloseButton />
@@ -803,7 +803,7 @@ const House = () => {
         </Modal>
 
         <Modal isOpen={isBannerOpen} onClose={onBannerClose} size="5xl">
-          <ModalOverlay backdropFilter="blur(10px) hue-rotate(90deg)/" />
+          <ModalOverlay backdropFilter="blur(10px) hue-rotate(90deg)" />
           <ModalContent>
             <ModalHeader>Edit Logo</ModalHeader>
             <ModalCloseButton />
