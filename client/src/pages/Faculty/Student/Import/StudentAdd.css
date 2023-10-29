@@ -1,0 +1,12 @@
+.StudentModal {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    flex-direction: column;
+}
+
+.StudentModal .flex {
+    display: flex;
+    gap: 20px;
+}

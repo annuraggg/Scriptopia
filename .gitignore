@@ -4,4 +4,8 @@ public
 ERROR-CODES.pdf
 server/backups/*
 out
-server/fbServiceAccount.js
+server/backups
+.gitignore
+server/backups/certificationBackup.json
+server/backups/houseBackup.json
+server/backups/houseBackup.json

@@ -214,7 +214,9 @@ const Navbar = () => {
               <Avatar src={picture} size="sm" />{" "}
             </MenuButton>
           ) : (
-            <Link to="/auth"> Sign In </Link>
+            <MenuButton>
+              <Avatar size="sm" />{" "}
+            </MenuButton>
           )}
         </Box>
         <MenuList className="menu">

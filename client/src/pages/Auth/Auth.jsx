@@ -10,6 +10,7 @@ import {
   InputRightElement,
   InputGroup,
   useToast,
+  Link,
 } from "@chakra-ui/react";
 import APSIT from "./../../assets/img/apsit-logo.png";
 import Logo from "./../../assets/img/logo.png";
@@ -302,6 +303,7 @@ const Auth = () => {
         >
           Login
         </Button>
+        <Link onClick={() => navigate("/forgot")}>Forgot Password?</Link>
         <p style={{ color: "red" }}>{err}</p>
       </Box>
       <CreatePW isFirstTime={open} mid={mid} />

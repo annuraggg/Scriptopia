@@ -624,7 +624,7 @@ const Certificate = () => {
               />
 
               <Text mt="20px">
-                <b>1.</b> Go to the directory containing the fle
+                <b>1.</b> Go to the directory containing the file
               </Text>
               <Text>
                 <b>2.</b> Open a Terminal in that Directory

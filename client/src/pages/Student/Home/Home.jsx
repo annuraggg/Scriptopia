@@ -57,6 +57,8 @@ const Home = () => {
           totalInternalPoints += internal;
           totalExternalPoints += external;
           totalEventsPoints += events;
+          console.log("TOTALS")
+          console.log(totalInternalPoints)
         }
       }
     }
@@ -79,7 +81,7 @@ const Home = () => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ mid: decoded.mid }),
+      body: JSON.stringify({ mid: decoded.mid.toString() }),
     })
       .then((res) => res.json())
       .then((data) => {
@@ -432,6 +434,7 @@ const Home = () => {
   useEffect(() => {
     if (!loading) {
       setHp(calculateTotalPoints());
+      console.log(calculateTotalPoints())
     }
   }, [loading]);
 
@@ -589,7 +592,7 @@ const Home = () => {
               <Flex align="center" justify="center" height="100%" gap="20px">
                 <canvas id="contribution"></canvas>
                 <Box className="pointAnalysis__stats" marginTop="-20px">
-                  <Text fontSize="14px">
+                 {/*} <Text fontSize="14px">
                     Internal Certification Points: <b> {hp?.totalInternal}</b>
                   </Text>
                   <Text fontSize="14px">
@@ -597,7 +600,7 @@ const Home = () => {
                   </Text>
                   <Text fontSize="14px">
                     Events Certification Points: <b>{hp?.totalEvents}</b>
-                  </Text>
+                          </Text>{*/}
                 </Box>
               </Flex>
             </Box>

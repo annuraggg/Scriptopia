@@ -90,6 +90,7 @@ const Profile = () => {
           if (jwt?.mid === user?.mid) {
             setPrivilege(true);
             setMid(jwt?.mid);
+            console.log(jwt);
           } else {
             setPrivilege(false);
           }
@@ -690,7 +691,6 @@ const Profile = () => {
 
         <Flex gap="20px" className="StudentProfile">
           <Heading>{privilege}</Heading>
-          {console.log(privilege)}
           <Box width="300vw">
             <Flex
               p="20px"
@@ -705,24 +705,26 @@ const Profile = () => {
                 <Avatar
                   size="2xl"
                   src={user.profilePicture}
-                  className="original"
+                  className={privilege ? "original" : null}
                 />
-                <Flex
-                  onClick={selectImage}
-                  align="center"
-                  justify="center"
-                  cursor="pointer"
-                  width="100%"
-                  height="100%"
-                  borderRadius="50%"
-                  className="overlay"
-                  bg="black"
-                >
-                  <i
-                    className="fa-solid fa-pen"
-                    style={{ fontSize: "20px", color: "white" }}
-                  ></i>
-                </Flex>
+                {privilege ? (
+                  <Flex
+                    onClick={selectImage}
+                    align="center"
+                    justify="center"
+                    cursor="pointer"
+                    width="100%"
+                    height="100%"
+                    borderRadius="50%"
+                    className={privilege ? "overlay" : null}
+                    bg="black"
+                  >
+                    <i
+                      className="fa-solid fa-pen"
+                      style={{ fontSize: "20px", color: "white" }}
+                    ></i>
+                  </Flex>
+                ) : null}
               </Box>
               <Input
                 type="file"
@@ -740,14 +742,14 @@ const Profile = () => {
               <Flex gap="20px">
                 <Box>
                   <Flex direction="column" align="center" justify="center">
-                    <Text>{user?.certificates?.internal}</Text>
+                    <Text>{user?.certificates?.internal ?? 0}</Text>
                     <Text fontSize="13px">Internal Certificates</Text>
                   </Flex>
                 </Box>
 
                 <Box>
                   <Flex direction="column" align="center" justify="center">
-                    <Text>{user?.certificates?.external}</Text>
+                    <Text>{user?.certificates?.external ?? 0}</Text>
                     <Text fontSize="13px">External Certificates</Text>
                   </Flex>
                 </Box>
@@ -755,7 +757,7 @@ const Profile = () => {
 
               <Box>
                 <Flex direction="column" align="center" justify="center">
-                  <Text>{user?.certificates?.event}</Text>
+                  <Text>{user?.certificates?.event ?? 0}</Text>
                   <Text fontSize="13px">Events Certificates</Text>
                 </Flex>
               </Box>
@@ -898,15 +900,11 @@ const Profile = () => {
                     gap="20px"
                     direction="column"
                   >
-                    {totalPoints > 0 ? (
-                      <canvas
-                        id="contribution"
-                        width="10px"
-                        height="10px"
-                      ></canvas>
-                    ) : (
-                      <Text>No points yet</Text>
-                    )}
+                    <canvas
+                      id="contribution"
+                      width="10px"
+                      height="10px"
+                    ></canvas>
                   </Flex>
                 </Box>
 

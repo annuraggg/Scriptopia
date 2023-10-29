@@ -1,0 +1,64 @@
+.StudentImport {
+  background-color: var(--bg);
+  height: 77vh;
+  padding: 20px 70px;
+}
+
+.StudentImport input[type="file"] {
+  display: none;
+}
+
+.StudentImport .custom-file-upload {
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  border-radius: 5px;
+  width: 150px;
+  text-align: center;
+  background-color: #edf2f7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: black;
+  font-weight: bolder;
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+}
+
+.StudentImport .custom-file-upload:hover {
+  background-color: #ccc;
+}
+
+.StudentImport .main {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.StudentImport .main .table {
+  height: 40vh;
+  border-radius: 10px;
+  overflow-y: auto;
+}
+
+.StudentImport .main .footer {
+  align-self: flex-end;
+  justify-self: flex-end;
+}
+
+.StudentImport .btn {
+  display: flex;
+  gap: 20px;
+}
+
+@media (max-width: 1250px) {
+  .StudentImport {
+    padding: 20px 20px;
+  }
+
+  .StudentImport .hide {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+}

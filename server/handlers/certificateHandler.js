@@ -4,31 +4,37 @@ import { certificationsDB } from "../configs/mongo.js";
 import { ObjectId } from "mongodb";
 import logger from "../configs/logger.js";
 import { app } from "../firebase.js";
-import { verifyToken } from "../apis/jwt.js"
+import { verifyToken } from "../apis/jwt.js";
+import { param, validationResult } from "express-validator";
 
 const fbstorage = app.storage().bucket("gs://scriptopia-90b1a.appspot.com");
 
-router.post("/get", async (req, res) => {
+const validationRules = [];
+
+router.post("/get", validationRules, async (req, res) => {
   const { id } = req.body;
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ error: "Invalid request body" });
+  }
+
   try {
     const certificate = await certificationsDB.findOne({
       _id: new ObjectId(id),
     });
     res.status(200).send(certificate);
   } catch (error) {
-    logger.error({
-      code: "STU-CHH-102",
-      message: "Certificate with ID " + id + "not found",
-      mid: req.user.mid,
-      err: error.message,
-    });
-    res.status(400).send("Certificate not found");
+    res.status(400).json({ error: "Certificate not found" });
   }
 });
 
-router.post("/download", async (req, res) => {
+router.post("/download", validationRules, async (req, res) => {
   const { id } = req.body;
-  console.log("DOWNLOAD");
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ error: "Invalid request body" });
+  }
 
   try {
     const certificate = await certificationsDB.findOne({
@@ -36,11 +42,11 @@ router.post("/download", async (req, res) => {
     });
 
     if (!certificate) {
-      return res.status(404).send("Certificate not found");
+      return res.status(404).json({ error: "Certificate not found" });
     }
 
     if (certificate.uploadType === "url") {
-      return res.status(400).send("Invalid certificate type for download");
+      return res.status(400).json({ error: "Certificate is not uploaded" });
     }
 
     const certificatePath = certificate.certificateURL;
@@ -50,10 +56,9 @@ router.post("/download", async (req, res) => {
 
     console.log(certificatePath);
     if (!fileExists) {
-      console.log("FILE NOT FOUND");
       return res
         .status(404)
-        .send("Certificate file not found in Firebase Storage");
+        .json({ error: "Certificate file not found on server" });
     }
 
     res.setHeader(
@@ -65,22 +70,19 @@ router.post("/download", async (req, res) => {
     file
       .createReadStream()
       .on("error", (err) => {
-        console.error("Error streaming the file:", err);
-        res.status(500).send("Error streaming the file");
+        res.status(500).json({ error: "Internal server error" });
       })
-      .on("end", () => {
-        console.log("File streaming complete.");
-      })
+      .on("end", () => {})
       .pipe(res);
   } catch (error) {
     console.log(error);
     logger.error({
-      code: "STU-CHH-103",
+      code: "STU-CHH-101",
       message: `Error while trying to download certificate with ID ${id}`,
       mid: req.user.mid,
       err: error.message,
     });
-    res.status(500).send("Internal server error");
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 

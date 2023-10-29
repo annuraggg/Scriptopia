@@ -21,6 +21,7 @@ router.post("/", verifyToken, async (req, res) => {
       err: err.message,
       mid: req.user.mid,
     });
+    console.log(err);
     res.status(401).send("Invalid Token");
   }
 });

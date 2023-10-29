@@ -62,7 +62,9 @@ const CreatePW = ({ isFirstTime, mid }) => {
               isClosable: true,
             });
             onClose();
-            window.location.href = "/";
+            const response = await res.json();
+            if (response.role === "S") window.location.href = "/";
+            else if (response.role === "F") window.location.href = "/faculty";
           } else {
             const response = await res.json();
             toast({
@@ -106,7 +108,11 @@ const CreatePW = ({ isFirstTime, mid }) => {
       >
         <AlertDialogOverlay>
           <AlertDialogContent>
-            <AlertDialogHeader fontSize="lg" fontWeight="bold" className="CreatePWHeader">
+            <AlertDialogHeader
+              fontSize="lg"
+              fontWeight="bold"
+              className="CreatePWHeader"
+            >
               Create a New, Secure Password
             </AlertDialogHeader>
 

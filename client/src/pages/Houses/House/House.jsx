@@ -58,6 +58,7 @@ import Loader from "../../../components/Loader";
 import GuestNavbar from "../../../components/guest/Navbar";
 import Chart from "chart.js/auto";
 import AvatarEditor from "react-avatar-editor";
+import { ArrowRightIcon } from "@chakra-ui/icons";
 
 const House = () => {
   const [houses, setHouses] = useState(null);
@@ -68,6 +69,13 @@ const House = () => {
   const [totalpoints, setTotalPoints] = useState(0);
   const [role, setRole] = useState(null);
   const toast = useToast();
+
+  const [internalPoints, setInternalPoints] = useState(0);
+  const [externalPoints, setExternalPoints] = useState(0);
+  const [eventPoints, setEventPoints] = useState(0);
+
+  const logoRef = React.useRef(null);
+  const bannerRef = React.useRef(null);
 
   const [logo, setLogo] = useState(null);
   const [banner, setBanner] = useState(null);
@@ -180,24 +188,38 @@ const House = () => {
           houses.points[currentYear][month].external +
           houses.points[currentYear][month].events;
         setTotalPoints((prev) => prev + points);
+        setInternalPoints(
+          (prev) => prev + houses.points[currentYear][month].internal
+        );
+        setExternalPoints(
+          (prev) => prev + houses.points[currentYear][month].external
+        );
+        setEventPoints(
+          (prev) => prev + houses.points[currentYear][month].events
+        );
+
+        console.log(houses.points[currentYear][month]);
       }
     }
   }, [houses]);
 
   useEffect(() => {
     if (members) {
+      console.log(members);
       members.forEach((member) => {
         let totalPoints = 0;
         for (const year in member.contr) {
           for (const month in member.contr[year]) {
             const points =
-              member.contr[year][month]?.internal +
-              member.contr[year][month]?.external +
-              member.contr[year][month]?.events;
-            totalPoints += points;
+              member.contr[year][month]?.internal ??
+              0 + member.contr[year][month]?.external ??
+              0 + member.contr[year][month]?.events ??
+              0;
+            const p = parseInt(points);
+            totalPoints += p;
           }
         }
-        member.totalPoints = totalPoints;
+        member.totalPoints = parseInt(totalPoints);
       });
 
       members.sort((a, b) => b.totalPoints - a.totalPoints);
@@ -311,33 +333,122 @@ const House = () => {
   };
 
   useEffect(() => {
+    let myPieChart;
     if (houses) {
-      var ctx = document.getElementById("myChart").getContext("2d");
-      var data = {
-        labels: ["Label 1", "Label 2", "Label 3"],
-        datasets: [
-          {
-            data: [30, 40, 30],
-            backgroundColor: ["red", "blue", "green"],
-          },
-        ],
-      };
+      if (internalPoints !== 0 && externalPoints !== 0 && eventPoints !== 0) {
+        var ctx = document.getElementById("myChart").getContext("2d");
+        var data = {
+          labels: ["Internal Points", "External Points", "Event Points"],
+          datasets: [
+            {
+              data: [internalPoints, externalPoints, eventPoints],
+              backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56"],
+            },
+          ],
+        };
 
-      var myPieChart = new Chart(ctx, {
-        type: "doughnut",
-        data: data,
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: {
-              display: false,
+        myPieChart = new Chart(ctx, {
+          type: "doughnut",
+          data: data,
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                display: false,
+              },
             },
           },
-        },
-      });
+        });
+      }
     }
-  }, [houses]);
+
+    return () => {
+      myPieChart?.destroy();
+    };
+  }, [houses, internalPoints, externalPoints, eventPoints]);
+
+  const openLogo = (e) => {
+    setLogo(e?.target?.files[0]);
+    onLogoOpen();
+  };
+
+  const openBanner = (e) => {
+    setBanner(e?.target?.files[0]);
+    onBannerOpen();
+  };
+
+  const selectLogo = () => {
+    document.getElementById("logofile").click();
+  };
+
+  const selectBanner = () => {
+    document.getElementById("bannerfile").click();
+  };
+
+  const saveLogo = () => {
+    const canvas = logoRef.current
+      .getImageScaledToCanvas()
+      .toDataURL("image/png");
+    fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/houses/${houseID}/logo`, {
+      method: "POST",
+      credentials: "include",
+      body: canvas,
+    }).then(async (res) => {
+      if (res.status === 200) {
+        toast({
+          title: "Success",
+          description: "Logo updated successfully",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
+        setUpdate((prev) => !prev);
+        return await res.json();
+      } else {
+        toast({
+          title: "Error",
+          description: "Something went wrong",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+      }
+    });
+    onLogoClose();
+  };
+
+  const saveBanner = () => {
+    const canvas = bannerRef.current
+      .getImageScaledToCanvas()
+      .toDataURL("image/png");
+    fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/houses/${houseID}/banner`, {
+      method: "POST",
+      credentials: "include",
+      body: canvas,
+    }).then(async (res) => {
+      if (res.status === 200) {
+        toast({
+          title: "Success",
+          description: "Banner updated successfully",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
+        setUpdate((prev) => !prev);
+        return await res.json();
+      } else {
+        toast({
+          title: "Error",
+          description: "Something went wrong",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+      }
+    });
+    onBannerClose();
+  };
 
   if (houses) {
     return (
@@ -355,7 +466,11 @@ const House = () => {
           <Flex gap="20px">
             <Box width="60%">
               <Box className="top">
-                <Box className="cover" bg={`url(${houses.banner})`} position={"relative"}>
+                <Box
+                  className="cover"
+                  bg={`url(${houses.banner})`}
+                  position={"relative"}
+                >
                   <Box className="cover-wrapper">
                     <Box className="cover-inside" bg={houses.color}></Box>
                     {editPrivilege ? (
@@ -371,7 +486,7 @@ const House = () => {
                         className="cover-overlay"
                         justify="center"
                         align="center"
-                        onClick={onBannerOpen}
+                        onClick={selectBanner}
                       >
                         <i
                           className="fa-solid fa-pen"
@@ -381,6 +496,13 @@ const House = () => {
                             marginLeft: "30px",
                           }}
                         ></i>
+                        <Input
+                          type="file"
+                          id="bannerfile"
+                          style={{ display: "none" }}
+                          accept="image/*"
+                          onChange={openBanner}
+                        />
                       </Flex>
                     ) : null}
                   </Box>
@@ -394,25 +516,34 @@ const House = () => {
                       ></Avatar>
 
                       {editPrivilege ? (
-                        <Flex
-                          height="150px"
-                          width="150px"
-                          position="absolute"
-                          bg="black"
-                          transform="translate(-50%, -50%)"
-                          borderRadius="50%"
-                          top="50%"
-                          left="50%"
-                          className="logo-overlay"
-                          justify="center"
-                          align="center"
-                          onClick={onLogoOpen}
-                        >
-                          <i
-                            className="fa-solid fa-pen"
-                            style={{ color: "white" }}
-                          ></i>
-                        </Flex>
+                        <>
+                          <Flex
+                            height="150px"
+                            width="150px"
+                            position="absolute"
+                            bg="black"
+                            transform="translate(-50%, -50%)"
+                            borderRadius="50%"
+                            top="50%"
+                            left="50%"
+                            className="logo-overlay"
+                            justify="center"
+                            align="center"
+                            onClick={selectLogo}
+                          >
+                            <i
+                              className="fa-solid fa-pen"
+                              style={{ color: "white" }}
+                            ></i>
+                          </Flex>
+                          <Input
+                            type="file"
+                            id="logofile"
+                            style={{ display: "none" }}
+                            accept="image/*"
+                            onChange={openLogo}
+                          />
+                        </>
                       ) : null}
                     </Box>
                     <Box
@@ -507,33 +638,43 @@ const House = () => {
                 <Tabs isFitted>
                   <TabList>
                     <Tab>House Ranking</Tab>
-                    <Tab>Recent Contribution</Tab>
+                    {/*}                    <Tab>Recent Contribution</Tab>{*/}
                   </TabList>
 
                   <TabPanels>
-                    <TabPanel>
-                      <Table variant="striped" width="inherit">
-                        <Thead>
-                          <Tr>
-                            <Td>#</Td>
-                            <Td>Name</Td>
-                            <Td>Moodle ID</Td>
-                            <Td>Points</Td>
-                          </Tr>
-                        </Thead>
-                        <Tbody>
-                          {members.slice(0, 5).map((member, index) => (
-                            <Tr key={member?.mid}>
-                              <Td>{index + 1}</Td>
-                              <Td>
-                                {member?.fname} {member?.lname}
-                              </Td>
-                              <Td>{member?.mid}</Td>
-                              <Td>{member?.totalPoints}</Td>
+                    <TabPanel height="28.5vh">
+                      <Flex align="center" justify="center">
+                        <Table variant="striped" colorScheme="twitter">
+                          <Thead>
+                            <Tr>
+                              <Td>#</Td>
+                              <Td>Name</Td>
+                              <Td>Moodle ID</Td>
+                              <Td>Points</Td>
                             </Tr>
-                          ))}
-                        </Tbody>
-                      </Table>
+                          </Thead>
+                          <Tbody>
+                            {members.slice(0, 2).map((member, index) => (
+                              <Tr key={member?.mid}>
+                                <Td>{index + 1}</Td>
+                                <Td>
+                                  {member?.fname} {member?.lname}
+                                </Td>
+                                <Td>{member?.mid}</Td>
+                                <Td>{member?.totalPoints}</Td>
+                              </Tr>
+                            ))}
+                          </Tbody>
+                        </Table>
+
+                        <Button
+                          height="23vh"
+                          colorScheme="twitter"
+                          onClick={onOpen}
+                        >
+                          <ArrowRightIcon />
+                        </Button>
+                      </Flex>
                     </TabPanel>
                   </TabPanels>
                 </Tabs>
@@ -779,6 +920,7 @@ const House = () => {
                 scale={logoZoom}
                 rotate={0}
                 borderRadius={250}
+                ref={logoRef}
               />
 
               <Slider
@@ -797,7 +939,8 @@ const House = () => {
             <ModalFooter>
               <Button colorScheme="blue" mr={3} onClick={onLogoClose}>
                 Close
-              </Button>
+              </Button>{" "}
+              <Button onClick={saveLogo}>Set</Button>
             </ModalFooter>
           </ModalContent>
         </Modal>
@@ -805,7 +948,7 @@ const House = () => {
         <Modal isOpen={isBannerOpen} onClose={onBannerClose} size="5xl">
           <ModalOverlay backdropFilter="blur(10px) hue-rotate(90deg)" />
           <ModalContent>
-            <ModalHeader>Edit Logo</ModalHeader>
+            <ModalHeader>Edit Banner</ModalHeader>
             <ModalCloseButton />
             <ModalBody overflow="auto"></ModalBody>
             <Flex
@@ -824,6 +967,7 @@ const House = () => {
                 scale={bannerZoom}
                 rotate={0}
                 borderRadius={20}
+                ref={bannerRef}
               />
 
               <Slider
@@ -833,7 +977,6 @@ const House = () => {
                 min={1}
                 step={0.1}
                 max={2}
-              
               >
                 <SliderTrack>
                   <SliderFilledTrack />
@@ -846,6 +989,7 @@ const House = () => {
               <Button colorScheme="blue" mr={3} onClick={onBannerClose}>
                 Close
               </Button>
+              <Button onClick={saveBanner}>Set</Button>
             </ModalFooter>
           </ModalContent>
         </Modal>

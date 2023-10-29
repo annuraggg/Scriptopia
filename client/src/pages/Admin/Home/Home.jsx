@@ -423,7 +423,7 @@ const Home = () => {
                     return (
                       <Tr key={certification._id}>
                         <Td>{certification.name}</Td>
-                        <Td>{certification.certificateName}</Td>
+                        <Td whiteSpace="nowrap" maxW="50px" overflow="hidden" textOverflow="ellipsis">{certification.certificateName}</Td>
                         <Td>{certification.submittedYear}</Td>
                         <Td>{certification.status}</Td>
                       </Tr>

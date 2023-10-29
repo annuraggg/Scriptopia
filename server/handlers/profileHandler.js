@@ -8,8 +8,6 @@ import { v2 as cloudinary } from "cloudinary";
 import multer from "multer";
 import jwt from "jsonwebtoken";
 import { app } from "../firebase.js";
-
-const upload = multer({ limits: 8000000 });
 const fbstorage = app.storage().bucket("gs://scriptopia-90b1a.appspot.com");
 
 router.post("/:id", async (req, res) => {
@@ -87,6 +85,7 @@ router.post("/:id/updatepfp", verifyToken, async (req, res) => {
       })
       .send({ success: true });
   } catch (error) {
+    console.log(error);
     logger.error({
       code: "STU-DSH-100",
       message: "Error fetching dashboard data",

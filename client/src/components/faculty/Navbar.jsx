@@ -34,11 +34,18 @@ import {
   Textarea,
   FormLabel,
   Text,
-  Link as ChakraLink
+  Link as ChakraLink,
 } from "@chakra-ui/react";
 
 import { Link } from "react-router-dom";
 const Navbar = () => {
+  const [moodle, setMoodle] = React.useState("");
+  const {
+    isOpen: isResetOpen,
+    onOpen: onResetOpen,
+    onClose: onResetClose,
+  } = useDisclosure();
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
     isOpen: isAlertOpen,
@@ -74,13 +81,10 @@ const Navbar = () => {
 
   useEffect(() => {
     try {
-      fetch(
-        `${import.meta.env.VITE_BACKEND_ADDRESS}/notifications/receive`,
-        {
-          method: "GET",
-          credentials: "include",
-        }
-      ).then((res) => {
+      fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/notifications/receive`, {
+        method: "GET",
+        credentials: "include",
+      }).then((res) => {
         if (res.status === 200) {
           res.json().then((data) => {
             setNotifications(data.notifications);
@@ -204,7 +208,7 @@ const Navbar = () => {
   const deleteNotification = () => {
     onEditClose();
     fetch(
-      `${import.meta.env.VITE_BACKEND_ADDRESS}/Faculty/notifications/delete`,
+      `${import.meta.env.VITE_BACKEND_ADDRESS}  /notifications/delete`,
       {
         method: "POST",
         credentials: "include",
@@ -227,6 +231,37 @@ const Navbar = () => {
         } else {
           toast({
             title: "Notification Not Deleted",
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+          });
+        }
+      });
+  };
+
+  const resetPassword = () => {
+    onResetClose();
+    fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/faculty/resetUser`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ mid: moodle }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.status === "success") {
+          toast({
+            title:
+              "Password Reset. Please Ask User to Login with Blank Password",
+            status: "success",
+            duration: 3000,
+            isClosable: true,
+          });
+        } else {
+          toast({
+            title: "Password Not Reset",
             status: "error",
             duration: 3000,
             isClosable: true,
@@ -264,6 +299,24 @@ const Navbar = () => {
                 </Link>
               </>
             ) : null}
+
+            {decoded.perms.includes("RSP") ? (
+              <>
+                <Link onClick={onResetOpen}>
+                  <MenuItem className="menuitem">
+                    Reset Student Password
+                  </MenuItem>
+                </Link>
+              </>
+            ) : null}
+
+            {decoded.perms.includes("AES") ? (
+              <>
+                <Link to="/faculty/students">
+                  <MenuItem className="menuitem">Manage Students</MenuItem>
+                </Link>
+              </>
+            ) : null}
           </MenuList>
         </Menu>
 
@@ -277,6 +330,22 @@ const Navbar = () => {
               </ChakraLink>
               <ChakraLink onClick={() => navigate("/faculty/enrollments")}>
                 Enrollment Requests
+              </ChakraLink>
+            </>
+          ) : null}
+
+          {decoded.perms.includes("RSP") ? (
+            <>
+              <ChakraLink onClick={onResetOpen}>
+                Reset Student Password
+              </ChakraLink>
+            </>
+          ) : null}
+
+          {decoded.perms.includes("AES") ? (
+            <>
+              <ChakraLink onClick={() => navigate("/faculty/students")}>
+                Manage Students
               </ChakraLink>
             </>
           ) : null}
@@ -426,6 +495,42 @@ const Navbar = () => {
               </Button>
               <Button colorScheme="green" onClick={updateNotification} ml={3}>
                 Update
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
+
+      <AlertDialog
+        isOpen={isResetOpen}
+        leastDestructiveRef={cancelRef}
+        onClose={onResetClose}
+      >
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader fontSize="lg" fontWeight="bold">
+              Reset User Password
+            </AlertDialogHeader>
+
+            <AlertDialogBody>
+              <Text mb="20px">
+                Enter Moodle ID of User to Reset Password Of
+              </Text>
+              <Input
+                type="text"
+                placeholder="Moodle ID"
+                width="20vw"
+                value={moodle}
+                onChange={(e) => setMoodle(e.target.value)}
+              />
+            </AlertDialogBody>
+
+            <AlertDialogFooter>
+              <Button ref={cancelRef} onClick={onResetClose}>
+                Cancel
+              </Button>
+              <Button colorScheme="red" onClick={resetPassword} ml={3}>
+                Reset
               </Button>
             </AlertDialogFooter>
           </AlertDialogContent>

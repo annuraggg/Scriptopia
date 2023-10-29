@@ -7,7 +7,8 @@
 }
 
 .houses .graphs {
-  background: var(--darker)
+  background: var(--darker);
+  border-radius: 20px;
 }
 
 @media screen and (max-width: 1250px) {

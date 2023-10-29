@@ -54,6 +54,7 @@ const Navbar = () => {
   const [notificationBody, setNotificationBody] = React.useState("");
   const [notificationExpiry, setNotificationExpiry] = React.useState("");
   const [update, setUpdate] = React.useState(false);
+  const [moodle, setMoodle] = React.useState("");
 
   const [updateNotificationBody, setUpdateNotificationBody] =
     React.useState("");
@@ -235,6 +236,43 @@ const Navbar = () => {
       });
   };
 
+  const {
+    isOpen: isResetOpen,
+    onOpen: onResetOpen,
+    onClose: onResetClose,
+  } = useDisclosure();
+
+  const resetPassword = () => {
+    onResetClose();
+    fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/admin/resetUser`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ mid: moodle }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.status === "success") {
+          toast({
+            title:
+              "Password Reset. Please Ask User to Login with Blank Password",
+            status: "success",
+            duration: 3000,
+            isClosable: true,
+          });
+        } else {
+          toast({
+            title: "Password Not Reset",
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+          });
+        }
+      });
+  };
+
   return (
     <div className="navAdmin">
       <div className="left-link">
@@ -262,6 +300,9 @@ const Navbar = () => {
             <RouterLink to="/admin/certificates">
               <MenuItem className="menuitem">Certificates</MenuItem>
             </RouterLink>
+            <MenuItem onClick={onResetOpen} className="menuitem">
+              Reset User Password
+            </MenuItem>
           </MenuList>
         </Menu>
 
@@ -273,6 +314,8 @@ const Navbar = () => {
           <Link onClick={() => navigate("/admin/certificates")}>
             Certificates
           </Link>
+          <Link onClick={() => navigate("/admin/feedback")}>Platform Feedback</Link>
+          <Link onClick={onResetOpen}>Reset User Password</Link>
         </div>
       </div>
 
@@ -444,6 +487,42 @@ const Navbar = () => {
               </Button>
               <Button colorScheme="green" onClick={updateNotification} ml={3}>
                 Update
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
+
+      <AlertDialog
+        isOpen={isResetOpen}
+        leastDestructiveRef={cancelRef}
+        onClose={onResetClose}
+      >
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader fontSize="lg" fontWeight="bold">
+              Reset User Password
+            </AlertDialogHeader>
+
+            <AlertDialogBody>
+              <Text mb="20px">
+                Enter Moodle ID of User to Reset Password Of
+              </Text>
+              <Input
+                type="text"
+                placeholder="Moodle ID"
+                width="20vw"
+                value={moodle}
+                onChange={(e) => setMoodle(e.target.value)}
+              />
+            </AlertDialogBody>
+
+            <AlertDialogFooter>
+              <Button ref={cancelRef} onClick={onResetClose}>
+                Cancel
+              </Button>
+              <Button colorScheme="red" onClick={resetPassword} ml={3}>
+                Reset
               </Button>
             </AlertDialogFooter>
           </AlertDialogContent>

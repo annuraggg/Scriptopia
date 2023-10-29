@@ -73,7 +73,7 @@ const Settings = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ oldPass, newPass }),
+          body: JSON.stringify({ oldPass: oldPass.toString(), newPass: newPass.toString() }),
         }
       )
         .then(async (res) => {

@@ -1,0 +1,33 @@
+.AdminStudents-Admin {
+  background-color: var(--bg);
+  padding: 20px 75px;
+}
+
+.AdminStudents-Admin .filters {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.AdminStudents-Admin .table {
+  overflow: auto;
+  height: 59vh;
+}
+
+.AdminStudents-Admin .actions {
+  display: flex;
+  gap: 20px;
+}
+
+@media (max-width: 768px) {
+  .AdminStudents-Admin {
+    padding: 30px 20px;
+  }
+
+  .AdminStudents-Admin .filters {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 1250px) {
+}

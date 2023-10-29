@@ -11,11 +11,11 @@
 - `ADM-BKH-100: BACKUP SUCCESSFUL`: Backup operation was successful.
 - `ADM-BKH-101: BACKUP FAILED`: Backup operation failed.
 
+**handler/admin/certificatesHandler.js**
+- `ADM-CHH-101: Error Fetching Certificates`: Error fetching certificates.
+
 **handler/admin/dashboardHandler.js**
 - `ADM-DSH-101 Failed to fetch data at dashboard`: Error fetching data for the dashboard.
-
-**handler/admin/eventsHandler.js**
-- `ADM-EVH-101 Failed to fetch events`: Error fetching events.
 
 **handler/admin/facultyHandler.js**
 - `ADM-FCH-101 Failed to get faculty`: Failed to retrieve faculty information.
@@ -49,14 +49,9 @@
 - `ADM-VA-101: Token did not support Admin Role`: Token did not support an admin role.
 
 **handler/student/certificatesHandler.js**
-- `STU-CHH-100: Error Fetching Certificate from Database`: Error fetching certificates from the database.
-- `STU-CHH-101: Error in Uploading Certificate`: Error uploading a certificate.
-- `STU-CHH-102: Certificate with ID was not found`: Certificate with the given ID was not found.
-- `STU-CHH-103: Certificate with ID was not found for Download`: Certificate with the given ID was not found for download.
-- `STU-CHH-104: Certificate with ID was not found for Deleting`: Certificate with the given ID was not found for deletion.
-- `STU-CHH-105: Certificate with ID was not found for updating`: Certificate with the given ID was not found for updating.
+- `STU-CHH-101: Error while trying to download certificate with ID ${id}`
 
-**handler/student/studentHandler.js**
+**handler/student/dashboardHandler.js**
 - `STU-DSH-100: Error Fetching Dashboard Data`: Error fetching dashboard data.
 - `STU-DSH-101: Error Updating The First Time Variable of Student`: Error updating the first-time variable of a student.
 

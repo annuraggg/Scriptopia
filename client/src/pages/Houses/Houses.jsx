@@ -164,6 +164,7 @@ const Houses = () => {
                 "rgba(75, 192, 192, 1)",
               ],
               borderWidth: 0,
+              borderRadius: 10
             },
           ],
         },
@@ -272,6 +273,7 @@ const Houses = () => {
                 "rgba(75, 192, 192, 1)",
               ],
               borderWidth: 0,
+              borderRadius: 10
             },
           ],
         },
@@ -365,7 +367,7 @@ const Houses = () => {
                 "rgba(75, 192, 192, 1)",
               ],
               borderWidth: 0,
-              barThickness: 50,
+              borderRadius: 10
             },
           ],
         },

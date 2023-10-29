@@ -4,7 +4,7 @@ import { ObjectId } from "mongodb";
 import logger from "../configs/logger.js";
 import { verifyPerms } from "./verifyPermissions.js";
 import { verifyToken } from "../apis/jwt.js";
-import { parse } from "dotenv";
+
 const router = express.Router();
 
 router.post("/", async (req, res) => {
@@ -48,11 +48,6 @@ router.get("/:id", async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({ message: "Error in getting event" });
-    logger.error({
-      code: "EVH100",
-      message: "Error in getting event",
-      err: error,
-    });
   }
 });
 

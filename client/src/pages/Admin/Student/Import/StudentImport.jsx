@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./StudentImport.css";
 import {
   Box,
@@ -26,6 +26,8 @@ const StudentImport = () => {
   const [tableData, setTableData] = useState([]);
   const [adding, setAdding] = useState(false);
   const [addIndividual, setAddIndividual] = useState(false);
+  const [houses, setHouses] = useState([]);
+
   const toast = useToast();
 
   const handleFileUpload = (event) => {
@@ -84,6 +86,31 @@ const StudentImport = () => {
         });
       });
   };
+
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/admin/students`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({}),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setHouses(data.houses);
+      })
+      .catch((err) => {
+        console.error(err);
+        toast({
+          title: "Error",
+          description: "Error fetching students",
+          status: "error",
+          duration: 2000,
+          isClosable: true,
+        });
+      });
+  }, []);
 
   return (
     <>
@@ -167,7 +194,7 @@ const StudentImport = () => {
         </Box>
       </Box>
 
-      {addIndividual ? <StudentAdd setModal={handleModal} /> : <></>}
+      {addIndividual ? <StudentAdd setModal={handleModal} houses={houses} /> : <></>}
     </>
   );
 };

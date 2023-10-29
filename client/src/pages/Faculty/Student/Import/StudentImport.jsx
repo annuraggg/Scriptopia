@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
+import "./StudentImport.css";
 import {
   Box,
   Button,
@@ -8,27 +9,25 @@ import {
   Th,
   Alert,
   AlertIcon,
-  AlertTitle,
   AlertDescription,
   Thead,
   Tr,
   useToast,
 } from "@chakra-ui/react";
-import Navbar from "../../../../components/admin/Navbar";
+import Navbar from "../../../../components/faculty/Navbar";
 import Papa from "papaparse";
 import Breadcrumb from "../../../../components/Breadcrumb";
 import { useAuthCheck } from "../../../../hooks/useAuthCheck";
-import "./FacultyImport.css";
-import FacultyAdd from "./FacultyAdd";
+import StudentAdd from "./StudentAdd";
 
-const FacultyImport = () => {
-  useAuthCheck("A");
+const StudentImport = () => {
+  useAuthCheck("F");
 
   const [tableData, setTableData] = useState([]);
   const [adding, setAdding] = useState(false);
   const [addIndividual, setAddIndividual] = useState(false);
-  const [houses, setHouses] = useState([]);
   const toast = useToast();
+  const [houses, setHouses] = useState([]);
 
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
@@ -44,19 +43,33 @@ const FacultyImport = () => {
   };
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/admin/faculty/houses`, {
-      method: "GET",
+    fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/faculty/students`, {
+      method: "POST",
       credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({}),
     })
       .then((res) => res.json())
       .then((data) => {
-        setHouses(data);
+        setHouses(data.houses);
+      })
+      .catch((err) => {
+        console.error(err);
+        toast({
+          title: "Error",
+          description: "Error fetching students",
+          status: "error",
+          duration: 2000,
+          isClosable: true,
+        });
       });
   }, []);
 
   const startImport = () => {
     setAdding(true);
-    fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/admin/faculty/import`, {
+    fetch(`${import.meta.env.VITE_BACKEND_ADDRESS}/faculty/students/import`, {
       method: "POST",
       credentials: "include",
       withCredentials: true,
@@ -64,41 +77,52 @@ const FacultyImport = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ tableData }),
-    }).then((res) => {
-      console.error(res);
-      setAdding(false);
-      if (res.status === 200) {
-        toast({
-          title: "Faculty Imported",
-          description: "Staff has been successfully imported",
-          status: "success",
-          duration: 3000,
-          isClosable: true,
-        });
-      } else {
+    })
+      .then((res) => {
+        setAdding(false);
+        if (res.status === 200) {
+          toast({
+            title: "Students Imported",
+            description: "Students have been successfully imported",
+            status: "success",
+            duration: 3000,
+            isClosable: true,
+          });
+        } else {
+          toast({
+            title: "Error",
+            description: "Error in importing students",
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+          });
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        setAdding(false);
         toast({
           title: "Error",
-          description: "Error in importing faculty",
+          description: "Error in importing students",
           status: "error",
           duration: 3000,
           isClosable: true,
         });
-      }
-    });
+      });
   };
 
   return (
     <>
       <Navbar />
       <Breadcrumb
-        title="Add Faculty"
+        title="Add Students"
         links={[
-          { href: "/admin", name: "Admin" },
-          { href: "/admin/faculty", name: "Faculty" },
+          { href: "/faculty", name: "faculty" },
+          { href: "/faculty/students", name: "Students" },
           { href: "#", name: "Add" },
         ]}
       />
-      <Box className="FacultyImport">
+      <Box className="StudentImport">
         <Box className="main">
           <Box className="btn">
             <Button
@@ -123,11 +147,10 @@ const FacultyImport = () => {
               be present in the .CSV file.
             </AlertDescription>
           </Alert>
-
           <input
             id="file-upload"
             type="file"
-            accept= ".csv"
+            accept=".csv"
             onChange={handleFileUpload}
           />
 
@@ -140,7 +163,7 @@ const FacultyImport = () => {
                   zIndex="sticky"
                   backgroundColor="#F7F6FA"
                 >
-                  <Th>Moodle ID</Th>
+                  <Th>Student ID</Th>
                   <Th>First Name</Th>
                   <Th>Last Name</Th>
                   <Th>Gender</Th>
@@ -149,7 +172,7 @@ const FacultyImport = () => {
               </Thead>
               <Tbody>
                 {tableData.map((row, index) => (
-                  <Tr key={row.mid}>
+                  <Tr key={index}>
                     {row.map((cell, index) => (
                       <Td key={index}>{cell}</Td>
                     ))}
@@ -170,9 +193,9 @@ const FacultyImport = () => {
         </Box>
       </Box>
 
-      {addIndividual ? <FacultyAdd setModal={handleModal} h={houses} /> : <></>}
+      {addIndividual ? <StudentAdd setModal={handleModal} houses={houses} /> : <></>}
     </>
   );
 };
 
-export default FacultyImport;
+export default StudentImport;

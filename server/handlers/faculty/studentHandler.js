@@ -5,8 +5,9 @@ import logger from "../../configs/logger.js";
 import { body } from "express-validator";
 import { ObjectId } from "mongodb";
 const router = express.Router();
+import { verifyPerms } from "../verifyPermissions.js";
 
-router.post("/", async (req, res) => {
+router.post("/", verifyPerms("AES"), async (req, res) => {
   try {
     const result = await userDB.find({ role: "S" }).toArray();
 
@@ -122,8 +123,6 @@ router.post(
   body("gender").notEmpty().trim().escape(),
   async (req, res) => {
     const { fname, lname, moodleid: mid, email, house, gender } = req.body;
-    console.log("LOG");
-    console.log(house);
 
     const password = await bcrypt.hash(
       process.env.DEFAULT_STUDENT_PASSWORD,
@@ -170,20 +169,16 @@ router.post(
     try {
       await userDB.insertOne(userSchema);
       console.log(house.toString());
-      if (house !== "") {
-        await houseDB.updateOne(
-          { _id: new ObjectId(house.toString()) },
-          {
-            $push: {
-              members: mid.toString(),
-            },
-          }
-        );
-      }
-
+      await houseDB.updateOne(
+        { _id: new ObjectId(house.toString()) },
+        {
+          $push: {
+            members: mid.toString(),
+          },
+        }
+      );
       return res.status(200).send({ message: "Data inserted successfully" });
-    } catch (error) {
-      console.log(error);
+    } catch {
       logger.error({
         code: "ADM-STH-102",
         message: "Failed to add student",
@@ -264,8 +259,6 @@ router.post(
   body("mid").notEmpty().withMessage("Moodle ID is required"),
   async (req, res) => {
     const { mid } = req.body;
-
-    console.log("OUTSIDE");
     try {
       console.log("HELLO");
       const user = await userDB.findOne({ mid: mid.toString() });
@@ -296,7 +289,6 @@ router.post(
 router.post("/bulkdelete", async (req, res) => {
   const { mids } = req.body;
   const midArr = [];
-  console.log(mids);
 
   mids.forEach((mid) => {
     mid.toString();
@@ -306,16 +298,14 @@ router.post("/bulkdelete", async (req, res) => {
     for (const mid of mids) {
       const user = await userDB.findOne({ mid: mid.toString() });
 
-      if (user.house.id !== "") {
-        await houseDB.updateOne(
-          { _id: new ObjectId(user.house.id.toString()) },
-          {
-            $pull: {
-              members: mid.toString(),
-            },
-          }
-        );
-      }
+      await houseDB.updateOne(
+        { _id: new ObjectId(user.house.id.toString()) },
+        {
+          $pull: {
+            members: mid.toString(),
+          },
+        }
+      );
     }
     await userDB.deleteMany({ mid: { $in: mids } });
     return res.status(200).send({ success: true });

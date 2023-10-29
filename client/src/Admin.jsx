@@ -9,6 +9,7 @@ import AdminFaculty from "./pages/Admin/Faculty/Faculty.jsx";
 import AdminSettings from "./pages/Admin/Settings/Settings.jsx";
 import AdminLogs from "./pages/Admin/Logs/Logs.jsx";
 import AdminCertificates from "./pages/Admin/Certificates/Certificates.jsx";
+import AdminFeedback from "./pages/Admin/Feedback/Feedback.jsx";
 
 const Admin = () => {
   return (
@@ -22,6 +23,7 @@ const Admin = () => {
       <Route path="/admin/settings" element={<AdminSettings />} />
       <Route path="/admin/logs" element={<AdminLogs />} />
       <Route path="/admin/certificates" element={<AdminCertificates />} />
+      <Route path="/admin/feedback" element={<AdminFeedback />} />
 
       <Route
         path="*"

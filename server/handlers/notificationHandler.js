@@ -16,14 +16,11 @@ router.post("/receive", verifyToken, async (req, res) => {
       { projection: { readNotifications: 1, _id: 0 } }
     );
 
-    console.log(readNotifications.readNotifications);
-
     const notifications = await notificationDB
       .find({ expiry: { $gte: dateToday } })
       .toArray();
 
     const unreadNotifications = notifications.filter((notification) => {
-      console.log(notification._id.toString());
       return !readNotifications.readNotifications.includes(
         notification._id.toString()
       );

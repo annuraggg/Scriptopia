@@ -17,20 +17,19 @@ Router.post("/", verifyToken, async (req, res) => {
     const user = await userDB.findOne({ mid: mid.toString() });
 
     let hno;
-    if(req.user.perms.includes("HC0")) {
+    if(req.user.perms.includes("HCO0")) {
       hno = 0;
-    } else if(req.user.perms.includes("HC1")) {
+    } else if(req.user.perms.includes("HCO1")) {
       hno = 1;
-    } else if(req.user.perms.includes("HC2")) {
+    } else if(req.user.perms.includes("HCO2")) {
       hno = 2;
-    } else if(req.user.perms.includes("HC3")) {
+    } else if(req.user.perms.includes("HCO3")) {
       hno = 3;
     }
 
     const userHouse = await houseDB.findOne({
       no: hno,
     });
-
     const certifications = await certificationsDB.find({ house: userHouse._id.toString() }).toArray();
 
     res.status(200).send({ allHouses, userHouse, user, certifications });
