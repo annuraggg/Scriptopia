@@ -52,7 +52,7 @@ router.post(
               expires: expirationDate,
               domain: process.env.COOKIE_DOMAIN,
             })
-            .send({ role: "A", mid, colorMode: findUser.colorMode });
+            .send({ role: "A", mid, colorMode: findUser.colorMode, token: token });
 
           logger.warn({
             code: "MN-LH-200",
@@ -94,7 +94,7 @@ router.post(
             expires: expirationDate,
             domain: process.env.COOKIE_DOMAIN,
           })
-          .send({ role: "F", firstTime, mid, colorMode: findUser.colorMode });
+          .send({ role: "F", firstTime, mid, colorMode: findUser.colorMode, token: token });
 
         logger.info({
           code: "MN-LH-201",
@@ -140,7 +140,7 @@ router.post(
               expires: expirationDate,
               domain: process.env.COOKIE_DOMAIN,
             })
-            .send({ role: "S", firstTime, mid, colorMode: findUser.colorMode });
+            .send({ role: "S", firstTime, mid, colorMode: findUser.colorMode, token: token });
 
           logger.info({
             code: "MN-LH-202",
@@ -195,7 +195,7 @@ router.post(
               ay: user.AY,
               branch: user.branch,
               picture: user.profilePicture,
-              role: "S",
+              role: user.role,
             },
             process.env.JWT_SECRET
           );
@@ -208,7 +208,7 @@ router.post(
               expires: expirationDate,
               domain: process.env.COOKIE_DOMAIN,
             })
-            .send();
+            .json({token: token, role: user.role});
         } else {
           res.status(500).send({
             title: "Something went wrong",

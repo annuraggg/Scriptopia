@@ -189,7 +189,10 @@ const Auth = () => {
             const response = await res.json();
             console.error(response);
             io.emit("onLogin", response.mid);
-            localStorage.setItem("chakra-ui-color-mode", response?.colorMode ?? "light");
+            localStorage.setItem(
+              "chakra-ui-color-mode",
+              response?.colorMode ?? "light"
+            );
 
             if (redirectURL !== "/") {
               navigate(redirectURL);
@@ -197,17 +200,20 @@ const Auth = () => {
             } else {
               if (response.role === "A") {
                 window.location.href = "/admin";
+                Cookie.set("token", response.token, { expires: 1 / 6 });
               } else if (response.role === "F") {
                 if (response.firstTime) {
                   setOpen(true);
                 } else {
+                  Cookie.set("token", response.token, { expires: 1 / 6 });
                   window.location.href = "/faculty";
                 }
               } else if (response.role === "S") {
                 if (response.firstTime) {
                   setOpen(true);
                 } else {
-                 window.location.href = "/";
+                  Cookie.set("token", response.token, { expires: 1 / 6 });
+                  window.location.href = "/";
                 }
               }
             }
