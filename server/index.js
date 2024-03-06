@@ -62,9 +62,15 @@ app.disable("x-powered-by");
 app.use(cookieParser());
 app.use(express.json());
 
-app.use(bodyParser.json({limit: '50mb', extended: true}));
-app.use(bodyParser.urlencoded({limit: "50mb", extended: true, parameterLimit:50000}));
-app.use(bodyParser.text({ limit: '200mb' }));
+app.use(bodyParser.json({ limit: "50mb", extended: true }));
+app.use(
+  bodyParser.urlencoded({
+    limit: "50mb",
+    extended: true,
+    parameterLimit: 50000,
+  })
+);
+app.use(bodyParser.text({ limit: "200mb" }));
 
 // # APIS
 
@@ -84,7 +90,7 @@ app.use("/houses", houseHandler);
 app.use("/events", eventsHandler);
 app.use("/certificates", certificateHandler);
 app.use("/profile", profileHandler);
-app.use("/notifications", notificationHandler)
+app.use("/notifications", notificationHandler);
 app.use("/forgot", forgotHandler);
 app.use("/feedback", feedbackHandler);
 app.use("/generator", generatorHandler);
@@ -95,7 +101,7 @@ app.use("/faculty", verifyToken, verifyFacultyPriviliges, mainFaculty);
 
 // FOR CRON JOBS
 app.get("/cron", (req, res) => {
-  res.send("Hello Cron!");
+  res.status(200).send({ status: "OK" });
 });
 
 const server = app.listen(5000);

@@ -42,9 +42,24 @@ const Home = () => {
           const { internal, external, events } = monthlyPoints[month];
 
           // Add them to their respective totals
-          totalInternalPoints += internal;
-          totalExternalPoints += external;
-          totalEventsPoints += events;
+
+          if (internal) {
+            totalEventsPoints += internal;
+          } else {
+            totalEventsPoints += 0;
+          }
+
+          if (external) {
+            totalEventsPoints += external;
+          } else {
+            totalEventsPoints += 0;
+          }
+
+          if (events) {
+            totalEventsPoints += events;
+          } else {
+            totalEventsPoints += 0;
+          }
         }
       }
     }
@@ -87,19 +102,29 @@ const Home = () => {
     if (!loading) {
       let house1 = calculateTotalPoints(houses[0]);
       house1 =
-        house1?.totalInternal + house1?.totalExternal + house1?.totalEvents;
+        (house1?.totalInternal ?? 0) +
+        (house1?.totalExternal ?? 0) +
+        (house1?.totalEvents ?? 0);
 
       let house2 = calculateTotalPoints(houses[1]);
       house2 =
-        house2?.totalInternal + house2?.totalExternal + house2?.totalEvents;
+        (house2?.totalInternal ?? 0) +
+        (house2?.totalExternal ?? 0) +
+        (house2?.totalEvents ?? 0);
 
       let house3 = calculateTotalPoints(houses[2]);
       house3 =
-        house3?.totalInternal + house3?.totalExternal + house3?.totalEvents;
+        (house3?.totalInternal ?? 0) +
+        (house3?.totalExternal ?? 0) +
+        (house3?.totalEvents ?? 0);
 
       let house4 = calculateTotalPoints(houses[3]);
       house4 =
-        house4?.totalInternal + house4?.totalExternal + house4?.totalEvents;
+        (house4?.totalInternal ?? 0) +
+        (house4?.totalExternal ?? 0) +
+        (house4?.totalEvents ?? 0);
+
+      console.log(house1, house2, house3, house4);
 
       const housePointChart = new Chart(housePoints, {
         type: "bar",
@@ -293,14 +318,12 @@ const Home = () => {
             ?.events ??
         0;
       const may =
-        houses[selectedHouse]?.points[currentYear?.toString()]?.may
-          ?.internal ??
+        houses[selectedHouse]?.points[currentYear?.toString()]?.may?.internal ??
         0 +
           houses[selectedHouse]?.points[currentYear?.toString()]?.may
             ?.external ??
         0 +
-          houses[selectedHouse]?.points[currentYear?.toString()]?.may
-            ?.events ??
+          houses[selectedHouse]?.points[currentYear?.toString()]?.may?.events ??
         0;
       const jun =
         houses[selectedHouse]?.points[currentYear?.toString()]?.june
