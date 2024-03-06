@@ -411,6 +411,7 @@ const Certificate = () => {
     if (certificate.role === "F") {
       return (
         <>
+          {console.log(certificate.role)}
           {role === "S" ? (
             <Navbar />
           ) : role === "A" ? (
@@ -471,12 +472,12 @@ const Certificate = () => {
               {certificate.uploadType !== "print" ? (
                 <Button
                   colorScheme="green"
-                  onClick={handleDownload}
+                  onClick={() => window.print()}
                   isLoading={loader3}
                   width="fit-content"
                   alignSelf="center"
                 >
-                  Download / View Certificate
+                  Print
                 </Button>
               ) : null}
               {certificate.uploadType === "file" ? (

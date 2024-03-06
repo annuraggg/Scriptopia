@@ -51,6 +51,14 @@ Router.post("/accept", verifyToken, async (req, res) => {
     const house = await houseDB.findOne({ no: hno });
 
     const mid = enrollment.mid;
+    
+    const user = await userDB.findOne({members: {$in: mid}})
+
+    if(user) {
+      return res.status(409).json({msg: "User Already Exist!"})
+    }
+
+
     await userDB.updateOne(
       { mid: mid.toString() },
       { $set: { approved: true, "house.id": house._id.toString() } }

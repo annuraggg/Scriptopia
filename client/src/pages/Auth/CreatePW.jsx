@@ -96,8 +96,13 @@ const CreatePW = ({ isFirstTime, mid }) => {
             });
             onClose();
             const response = await res.json();
-            if (response.role === "S") window.location.href = "/";
-            else if (response.role === "F") window.location.href = "/faculty";
+            if (response.role === "S") {
+              Cookie.set("token", response.token, { expires: 1 / 6 });
+              window.location.href = "/";
+            } else if (response.role === "F") {
+              Cookie.set("token", response.token, { expires: 1 / 6 });
+              window.location.href = "/faculty";
+            }
           } else {
             const response = await res.json();
             toast({
