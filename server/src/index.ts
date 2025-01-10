@@ -12,4 +12,6 @@ app.get("/*", (c) => {
   return c.json({ status: "Not Found", code: 404 }, 404);
 });
 
+// inform
+
 logger.info(`Server is running on port ${port}`);
