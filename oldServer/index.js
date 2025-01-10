@@ -111,6 +111,8 @@ export const io = new Server(server, {
       "https://admin.socket.io",
       process.env.FRONTEND_ADDRESS,
       process.env.DEBUG_SERVER,
+      "https://scriptopia.anuragsawant.tech",
+      "scriptopia.anuragsawant.tech",
     ],
     credentials: true,
   },

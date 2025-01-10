@@ -1,12 +1,8 @@
-import express from "express";
-const Router = express.Router();
-import { verifyToken } from "../apis/jwt.js";
-import { enrollmentDB, userDB } from "../configs/mongo.js";
+import { enrollmentDB, userDB } from "../configs/mongoose.js";
 import logger from "../configs/logger.js";
 
-Router.post("/", verifyToken, async (req, res) => {
+export const createEnrollment = async (req, res) => {
   const { mid, about, technical, projects, cgpa } = req.body;
-  console.log(req.body)
   try {
     const user = await userDB.findOne({ mid: mid.toString() });
     if (user) {
@@ -14,11 +10,11 @@ Router.post("/", verifyToken, async (req, res) => {
         { mid: mid.toString() },
         { $set: { firstTime: false } }
       );
-      await enrollmentDB.insertOne({
+      await enrollmentDB.create({
         mid: mid.toString(),
-        about: about.toString(),
-        technical: technical.toString(),
-        projects: projects.toString(),
+        about,
+        technical,
+        projects,
         cgpa: parseFloat(cgpa),
       });
       res.status(200).send({ success: true });
@@ -26,7 +22,6 @@ Router.post("/", verifyToken, async (req, res) => {
       res.status(500).send({ success: false });
     }
   } catch (error) {
-    console.log(error);
     logger.error({
       code: "MN-FTH-100",
       message: "Error updating first time data",
@@ -35,6 +30,6 @@ Router.post("/", verifyToken, async (req, res) => {
     });
     res.status(500).send({ success: false });
   }
-});
+};
 
-export default Router;
+export default { createEnrollment };

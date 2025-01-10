@@ -201,6 +201,7 @@ const Auth = () => {
               if (response.role === "A") {
                 window.location.href = "/admin";
                 Cookie.set("token", response.token, { expires: 1 / 6 });
+                Cookie.set("token", response.token, { expires: 1 / 6 });
               } else if (response.role === "F") {
                 if (response.firstTime) {
                   setOpen(true);
@@ -267,7 +268,7 @@ const Auth = () => {
         <Box className="left-inner">
           <Heading>Did You Know?</Heading>
           <Text>{fact}</Text>
-          <Text className="creds">A Project by Bigg Chungus</Text>
+          <Text className="creds">A Project by Team Scriptopia</Text>
         </Box>
       </Box>
       <Box className="right">

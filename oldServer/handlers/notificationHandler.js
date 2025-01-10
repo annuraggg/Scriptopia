@@ -13,8 +13,17 @@ router.post("/receive", verifyToken, async (req, res) => {
   try {
     const readNotifications = [];
 
+    const scopeValues = ["all"];
+
+    if (mid) {
+      scopeValues.push(mid);
+    }
+
     const notifications = await notificationDB
-      .find({ expiry: { $gte: dateToday }, scope: { $in: ["all", mid] } })
+      .find({
+        expiry: { $gte: dateToday },
+        scope: { $in: scopeValues },
+      })
       .toArray();
 
     const user = await userDB.findOne({ mid });
@@ -25,12 +34,12 @@ router.post("/receive", verifyToken, async (req, res) => {
       })
       .toArray();
 
-    let eventNotification;
+    let eventNotification = [];
     if (user.registeredEvents) {
       eventNotification = await notificationDB
         .find({
           expiry: { $gte: dateToday },
-          "scope.events": { $in: user.registeredEvents },
+          "scope.events": { $in: [user.registeredEvents] },
         })
         .toArray();
     }
